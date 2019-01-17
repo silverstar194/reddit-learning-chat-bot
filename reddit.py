@@ -2,7 +2,7 @@ import praw
 import time
 import random
 import bot
-
+import logging
 
 class Account:
     def __init__(self, REDDIT_CLIENT_ID, REDDIT_SECRET, REDDIT_PASSWORD, REDDIT_USER_AGENT, REDDIT_USERNAME, timezone):
@@ -62,21 +62,22 @@ class RunBot:
             # Pass the users comment to chatbrain asking for a reply
             response = bot.brain.reply(comment.body)
             if len(response) < 80:
-                print("http://www.reddit.com"+comment.permalink)
-                print("Comment: " +comment.body)
-                print("Bot: "+response)
-                print("#")*80
-                print("")
-                time.sleep(15)
-            else:
-                print("Too long", len(response))
-        except Exception as e:
-            print e
+                logging.info("http://www.reddit.com"+comment.permalink)
+                logging.info("Comment: " +comment.body)
+                logging.info("Bot: "+response)
+                logging.info("#"*80+"\n\n")
+                try:
+                    # Reply tp the same users comment with chatbrains reply
+                    reply = comment.reply(response)
+                except Exception as e:
+                     logging.info("reply FAILED")
+                     logging.info(e)
 
-        try:
-            # Reply tp the same users comment with chatbrains reply
-            #reply = comment.reply(response)
-            pass
+            else:
+                 logging.info("Too long"+len(response))
+       
         except Exception as e:
-            print "reply FAILED"
+            logging.info(e)
+
+        
 
