@@ -1,9 +1,15 @@
 from bot import brain
-import reddit
 import time
-
+import praw
+import settings
 
 if __name__ == '__main__':
+    ## Default bot for collecting training data
+    api = praw.Reddit(client_id=settings.REDDIT_CLIENT_ID,
+                         client_secret=settings.REDDIT_SECRET,
+                         password=settings.REDDIT_PASSWORD,
+                         user_agent=settings.REDDIT_USER_AGENT,
+                         username=settings.REDDIT_USERNAME)
 
     # Start an endless loop
     while True:
@@ -12,7 +18,7 @@ if __name__ == '__main__':
         # so that it doesn't stop because of errors
         try:
             # Get the hot submissions from a random subreddit
-            submissions = reddit.api.subreddit('random').hot()
+            submissions = api.subreddit('random').hot()
 
             # Loop through each submission
             for submission in submissions:
@@ -34,3 +40,4 @@ if __name__ == '__main__':
 
         # Wait 15 seconds and study a different subreddit
         time.sleep(15)
+
